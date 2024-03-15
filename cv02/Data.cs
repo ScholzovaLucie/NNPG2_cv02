@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace cv02
 {
-    public class Data
+    public class Data<T>
     {
-        public string[] Vertices { get; set; }
-        public string[] InputVertices { get; set; }
-        public string[] OutputVertices { get; set; }
-        public string[][] Cross {  get; set; }
-        public string[][] Edges { get; set; }
+        public T[] Vertices { get; set; }
+        public T[] InputVertices { get; set; }
+        public T[] OutputVertices { get; set; }
+        public T[][] Cross {  get; set; }
+        public T[][] Edges { get; set; }
     }
 }

@@ -1,32 +1,77 @@
 ﻿using cv02.Graf;
 using cv02.Parser;
+using cv02.Path;
+using System.Collections.Generic;
 
 
 namespace cv02
 {
-    public class GraphProcessor
+    public class GraphProcessor<T>
     {
-        public LList LList { get; set; }
-        public RList RList { get; set; }
+        public Paths<T> paths { get; set; }
+        public DisjunktPaths<T> DisjunktPaths { get; set; }
 
-        public GraphData graphData { get; set; }
-
+        public Graf<T> graphData { get; set; }
+        public List<Vertex<T>> InputVertices { get; set; }
+        public List<Vertex<T>> OutputVertices { get; set; }
 
 
         public void ProcessGraph(string filePath)
         {
-            Parser.Parser parser = new Parser.Parser();
-            Data data = parser.loadData(filePath);
-            this.graphData = new GraphData(data);
+            Parser<T> parser = new Parser<T>(filePath);
+            List<Vertex<T>> vertices = parser.ExtractVertices();
+            List<Edge<T>> edges = parser.ExtractEdges();
+            InputVertices = parser.ExtractInputVertices();
+            OutputVertices = parser.ExtractOutputVertices();
+            List<List<Vertex<T>>> cross = parser.ExtractCross();
 
-            LList = new LList(graphData);
-            RList = new RList(LList);
+             graphData = CreateGraf(vertices, edges, cross);
 
-            LList.printList();
-            RList.printList();
+            paths = new Paths<T>(graphData, InputVertices, OutputVertices);
 
-            parser.saveData(RList, LList);
+            DisjunktPaths = new DisjunktPaths<T>(paths);
+
+            paths.printList();
+            DisjunktPaths.printList();
+
+            Console.WriteLine("LList: "+paths.paths.Count);
+            Console.WriteLine("RList: " + DisjunktPaths.getDisjonktPaths().Count);
         }
+
+        private Graf<T> CreateGraf(List<Vertex<T>> vertices, List<Edge<T>> edges, List<List<Vertex<T>>> cross)
+        {
+            Graf<T> graf = new Graf<T>();
+
+            foreach (Vertex<T> vertex in vertices)
+            {
+                List<Edge<T>> currentEdges = findEdges(vertex, edges);
+                foreach (var edge in currentEdges)
+                {
+                    vertex.Edges.Add(edge);
+                }
+                graf.AddVertex(vertex);
+                
+            }
+
+            foreach (var item in cross)
+            {
+                graf.Cross.Add(item);
+            }
+
+
+            return graf;
+        }
+
+        private List<Edge<T>> findEdges(Vertex<T> vertex, List<Edge<T>> edges)
+        {
+            List<Edge<T>> currentEdges = new List<Edge<T>>();
+            foreach (var edge in edges)
+            {
+                if(edge.StartVertex.sameVertex(vertex)) currentEdges.Add(edge);
+            }
+            return currentEdges;
+        }
+        
 
 
     }

@@ -10,11 +10,8 @@ namespace cv02
         {
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
-            GraphProcessor graphProcessor = new GraphProcessor();
-            graphProcessor.ProcessGraph("../../../files/sem_01_uvodni.json");
-
             ApplicationConfiguration.Initialize();
-            Application.Run(new Form1(graphProcessor));
+            Application.Run(new Mapa());
         }
     }
 }
