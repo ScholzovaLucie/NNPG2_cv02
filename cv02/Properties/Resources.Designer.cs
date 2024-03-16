@@ -63,9 +63,9 @@ namespace cv02.Properties {
         /// <summary>
         ///   Vyhledává lokalizovaný prostředek typu System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Snímek_obrazovky_2024_03_04_102451 {
+        internal static System.Drawing.Bitmap mapa {
             get {
-                object obj = ResourceManager.GetObject("Snímek obrazovky 2024-03-04 102451", resourceCulture);
+                object obj = ResourceManager.GetObject("mapa", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

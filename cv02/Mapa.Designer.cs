@@ -41,12 +41,12 @@
             toolStripSeparator3 = new ToolStripSeparator();
             Paths = new ToolStripLabel();
             count_paths = new ToolStripLabel();
-            Panel = new Panel();
-            PaintPanel = new Panel();
-            contextMenuStrip1 = new ContextMenuStrip(components);
             toolStripSeparator4 = new ToolStripSeparator();
             DisjunktPaths = new ToolStripLabel();
             DisjunktPathsCount = new ToolStripLabel();
+            Panel = new Panel();
+            PaintPanel = new Panel();
+            contextMenuStrip1 = new ContextMenuStrip(components);
             toolStrip1.SuspendLayout();
             Panel.SuspendLayout();
             SuspendLayout();
@@ -137,31 +137,6 @@
             count_paths.Size = new Size(13, 22);
             count_paths.Text = "0";
             // 
-            // Panel
-            // 
-            Panel.Controls.Add(PaintPanel);
-            Panel.Dock = DockStyle.Fill;
-            Panel.Location = new Point(0, 25);
-            Panel.Name = "Panel";
-            Panel.Size = new Size(1484, 736);
-            Panel.TabIndex = 2;
-            // 
-            // PaintPanel
-            // 
-            PaintPanel.AutoScroll = true;
-            PaintPanel.BackgroundImage = Properties.Resources.Snímek_obrazovky_2024_03_04_102451;
-            PaintPanel.BackgroundImageLayout = ImageLayout.Stretch;
-            PaintPanel.Dock = DockStyle.Fill;
-            PaintPanel.Location = new Point(0, 0);
-            PaintPanel.Name = "PaintPanel";
-            PaintPanel.Size = new Size(1484, 736);
-            PaintPanel.TabIndex = 0;
-            // 
-            // contextMenuStrip1
-            // 
-            contextMenuStrip1.Name = "contextMenuStrip1";
-            contextMenuStrip1.Size = new Size(61, 4);
-            // 
             // toolStripSeparator4
             // 
             toolStripSeparator4.Name = "toolStripSeparator4";
@@ -178,6 +153,31 @@
             DisjunktPathsCount.Name = "DisjunktPathsCount";
             DisjunktPathsCount.Size = new Size(13, 22);
             DisjunktPathsCount.Text = "0";
+            // 
+            // Panel
+            // 
+            Panel.Controls.Add(PaintPanel);
+            Panel.Dock = DockStyle.Fill;
+            Panel.Location = new Point(0, 25);
+            Panel.Name = "Panel";
+            Panel.Size = new Size(1484, 736);
+            Panel.TabIndex = 2;
+            // 
+            // PaintPanel
+            // 
+            PaintPanel.AutoScroll = true;
+            PaintPanel.BackgroundImage = Properties.Resources.mapa;
+            PaintPanel.BackgroundImageLayout = ImageLayout.Stretch;
+            PaintPanel.Location = new Point(0, 0);
+            PaintPanel.Name = "PaintPanel";
+            PaintPanel.Size = new Size(1484, 736);
+            PaintPanel.TabIndex = 0;
+            PaintPanel.MouseWheel += PaintPanel_MouseWheel;
+            // 
+            // contextMenuStrip1
+            // 
+            contextMenuStrip1.Name = "contextMenuStrip1";
+            contextMenuStrip1.Size = new Size(61, 4);
             // 
             // Mapa
             // 
