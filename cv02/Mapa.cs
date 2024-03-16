@@ -4,8 +4,10 @@ using cv02.Path;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Net;
 using System.Numerics;
 using System.Windows.Forms;
+using static System.Windows.Forms.AxHost;
 using Path = cv02.Path;
 
 namespace cv02
@@ -18,7 +20,9 @@ namespace cv02
         private bool dragging = false;
         private bool drawEdge = false;
         private bool drawingLine = false;
+        private bool removeEdge = false;
         private bool moove = false;
+        private bool removing = false;
         private int radius = 20;
         private int border = 200;
         private float zoomFactor = 1.1f;
@@ -84,10 +88,20 @@ namespace cv02
 
             foreach (Vertex<string, VertexData, EdgeData> item in this.graphProcessor.graphData.Vertices)
             {
+                
                 if (item.data.rectangle.Contains(e.Location))
                 {
                     this.vertex = item;
                     found = true;
+                    if (this.removeEdge)
+                    {
+                        this.removing = true;
+                        this.edge = new Edge<string, VertexData, EdgeData>();
+                        this.edge.Name = this.graphProcessor.edges.Count.ToString();
+                        this.edge.StartVertex = this.vertex;
+                        this.edge.EndVertex = this.vertex;
+                        this.edge.setData(new EdgeData());
+                    }
                     if (moove)
                     {
                         this.dragging = true;
@@ -139,10 +153,41 @@ namespace cv02
                     this.graphProcessor.edges.Add(edge);
                 }
             }
-            moove = false;
-            dragging = false;
-            drawingLine = false;
-            drawEdge = false;
+
+            if(this.removing && this.removeEdge)
+            {
+                bool found = false;
+                Edge<string, VertexData, EdgeData> deleteEdge = new Edge<string, VertexData, EdgeData>();
+                foreach (Vertex<string, VertexData, EdgeData> item in this.graphProcessor.graphData.Vertices)
+                {
+                    if (item.data.rectangle.Contains(e.Location))
+                    {
+                        this.edge.EndVertex = item;
+                        this.vertex = item;
+                        
+
+                        foreach (var actualEdge in this.graphProcessor.edges)
+                        {
+                            if (actualEdge.EndVertex.Name.Equals(edge.EndVertex.Name) && actualEdge.StartVertex.Name.Equals(edge.StartVertex.Name))
+                            {
+                                deleteEdge = actualEdge;
+                            }
+                        }
+                        edge.StartVertex.removeEdge(deleteEdge);
+                        found = true;
+                        break;
+                    }
+                }
+                if (found)
+                {
+                    this.graphProcessor.edges.Remove(deleteEdge);
+                }
+            }
+            this.removing = false;
+            this.moove = false;
+            this.dragging = false;
+            this.drawingLine = false;
+            this.drawEdge = false;
             this.PaintPanel.Invalidate();
         }
 
@@ -385,8 +430,7 @@ namespace cv02
 
         private void vymazani_useku_Click(object sender, EventArgs e)
         {
-            // Implementace mazání hrany
-            // ...
+            this.removeEdge = true;
         }
     }
 }

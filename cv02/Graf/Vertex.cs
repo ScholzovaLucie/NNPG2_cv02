@@ -36,6 +36,17 @@ namespace cv02.Graf
             this.data = data;
         }
 
+        public void removeEdge(Edge<T, TVertexData, TEdgeData> edge)
+        {
+            for (int i = 0; i < edges.Count; i++)
+            {
+                if (edges[i].Name.Equals(edge.Name))
+                {
+                    edges.Remove(edges[i]);
+                }
+            }
+        }
+
 
         public bool sameVertex(Vertex<T, TVertexData, TEdgeData> other)
         {
