@@ -1,4 +1,5 @@
-﻿using System;
+﻿using cv02.DrawData;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
@@ -7,46 +8,36 @@ using System.Threading.Tasks;
 
 namespace cv02.Graf
 {
-    public class Vertex<T>
+    public class Vertex<T, TVertexData, TEdgeData>
     {
         public T Name
         {
             get { return name; }
             set { name = value; }
         }
-        public int coordinateX { get; set; }
-        public int coordinateY { get; set; }
-        public Point point;
-        public Rectangle rectangle;
+
+        public TVertexData data { get; set; }
 
         private T name;
 
-        public List<Edge<T>> Edges {  
+        public List<Edge<T, TVertexData, TEdgeData>> Edges {  
             get { return edges;}
             set { edges = value; }
         }
 
-        private List<Edge<T>> edges;
+        private List<Edge<T, TVertexData, TEdgeData>> edges;
 
         public Vertex(T name) {
             this.name = name;
-            edges = new List<Edge<T>>();
+            edges = new List<Edge<T, TVertexData, TEdgeData>>();
         }
 
-        public void generateCoordinates(int start, int width, int height)
-        {
-            Random rnd = new Random();
-            lock (rnd)
-            {
-                this.coordinateX = rnd.Next(start, width);
-            }
-            lock (rnd)
-            {
-                this.coordinateY = rnd.Next(0, height);
-            }
+        public void setData(TVertexData data) {
+            this.data = data;
         }
 
-        public bool sameVertex(Vertex<T> other)
+
+        public bool sameVertex(Vertex<T, TVertexData, TEdgeData> other)
         {
             return Name.Equals(other.Name);
         }

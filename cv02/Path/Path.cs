@@ -8,17 +8,17 @@ using cv02.Graf;
 
 namespace cv02.Path
 {
-    public class Path<T>
+    public class Path<T, TVertexData, TEdgeData>
     {
         public string Name { get; set; }
-        public LinkedList<Vertex<T>> Vertices { get; set; }
+        public LinkedList<Vertex<T, TVertexData, TEdgeData>> Vertices { get; set; }
 
-        public Path(LinkedList<Vertex<T>> vertices)
+        public Path(LinkedList<Vertex<T, TVertexData, TEdgeData>> vertices)
         {
             Vertices = vertices;
         }
 
-        public Path(int index, LinkedList<Vertex<T>> vertices)
+        public Path(int index, LinkedList<Vertex<T, TVertexData, TEdgeData>> vertices)
         {
             Name = "A" + index;
             Vertices = vertices;
@@ -30,38 +30,38 @@ namespace cv02.Path
             Name = "A" + index;
         }
 
-        public Path<T> Copy()
+        public Path<T, TVertexData, TEdgeData> Copy()
         {
-            LinkedList<Vertex<T>> copiedVertices = new LinkedList<Vertex<T>>(Vertices);
-            return new Path<T>(copiedVertices);
+            LinkedList<Vertex<T, TVertexData, TEdgeData>> copiedVertices = new LinkedList<Vertex<T, TVertexData, TEdgeData>>(Vertices);
+            return new Path<T, TVertexData, TEdgeData>(copiedVertices);
         }
 
-        public Vertex<T> getFirst()
+        public Vertex<T, TVertexData, TEdgeData> getFirst()
         {
             return Vertices.First();
         }
 
-        public Vertex<T> getLast()
+        public Vertex<T, TVertexData, TEdgeData> getLast()
         {
             return Vertices.Last();
         }
 
 
-        public bool Equals(Path<T> other)
+        public bool Equals(Path<T, TVertexData, TEdgeData> other)
         {
             if (Vertices.Count != other.Vertices.Count) return false;
 
             bool same = true;
 
-            Vertex<T> aktual_this = Vertices.First();
-            Vertex<T> aktual_other = other.Vertices.First();
+            Vertex<T, TVertexData, TEdgeData> aktual_this = Vertices.First();
+            Vertex<T, TVertexData, TEdgeData> aktual_other = other.Vertices.First();
 
             if (!aktual_this.Name.Equals(aktual_other.Name))
             {
                 return false;
             }
 
-            foreach (Vertex<T> s in Vertices)
+            foreach (Vertex<T, TVertexData, TEdgeData> s in Vertices)
             {
                 if (Vertices.Find(aktual_this).Next == null)
                 {
@@ -84,7 +84,7 @@ namespace cv02.Path
             return same;
         }
 
-        public bool IsDisjoint(Path<T> other)
+        public bool IsDisjoint(Path<T, TVertexData, TEdgeData> other)
         {
             foreach (var vertex in Vertices)
             {
@@ -100,18 +100,4 @@ namespace cv02.Path
         }
     }
 
-    public class PathComparer<T> : IEqualityComparer<Path<T>>
-    {
-        public bool Equals(Path<T> x, Path<T> y)
-        {
-            // Porovnání pouze podle jména
-            return x?.Name == y?.Name;
-        }
-
-        public int GetHashCode(Path<T> obj)
-        {
-            // Vrátí hash kódu jména, aby byla zaručena unikátnost
-            return obj.Name?.GetHashCode() ?? 0;
-        }
-    }
 }

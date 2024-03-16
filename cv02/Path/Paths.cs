@@ -3,21 +3,25 @@ using cv02.Graf;
 
 namespace cv02.Path
 {
-    public class Paths<T>
+    public class Paths<T, TVertexData, TRdgeData>
     {
         [JsonProperty]
-        public List<Path<T>> paths { get; set; }
+        public List<Path<T, TVertexData, TRdgeData>> paths { get; set; }
         private int index = 1;
-        private Graf<T> graphData;
-        public List<Vertex<T>> InputVertices { get; private set; }
-        public List<Vertex<T>> OutputVertices { get; private set; }
+        private Graf<T, TVertexData, TRdgeData> graphData;
+        public List<Vertex<T, TVertexData, TRdgeData>> InputVertices { get; private set; }
+        public List<Vertex<T, TVertexData, TRdgeData>> OutputVertices { get; private set; }
 
-        public Paths(Graf<T> graphData, List<Vertex<T>> InputVertices, List<Vertex<T>> OutputVertices)
+        public Paths(
+            Graf<T, TVertexData, TRdgeData> graphData, 
+            List<Vertex<T, TVertexData, TRdgeData>> InputVertices, 
+            List<Vertex<T, TVertexData, TRdgeData>> OutputVertices
+            )
         {
             this.graphData = graphData;
             this.InputVertices = InputVertices;
             this.OutputVertices = OutputVertices;
-            paths = new List<Path<T>>();
+            paths = new List<Path<T, TVertexData, TRdgeData>>();
             FindPaths();
         }
 
@@ -34,12 +38,12 @@ namespace cv02.Path
         {
             foreach (var inputVertex in InputVertices)
             {
-                List<Vertex<T>> visited = new List<Vertex<T>>();
+                List<Vertex<T, TVertexData, TRdgeData>> visited = new List<Vertex<T, TVertexData, TRdgeData>>();
                 DFS(inputVertex, visited);
             }
         }
 
-        private void DFS(Vertex<T> currentVertex, List<Vertex<T>> visited)
+        private void DFS(Vertex<T, TVertexData, TRdgeData> currentVertex, List<Vertex<T, TVertexData, TRdgeData>> visited)
         {
             visited.Add(currentVertex);
 
@@ -50,7 +54,7 @@ namespace cv02.Path
                 !PathAlreadyExists(visited)
                 )
             {
-                paths.Add(new Path<T>(index++, new LinkedList<Vertex<T>>(visited)));
+                paths.Add(new Path<T, TVertexData, TRdgeData>(index++, new LinkedList<Vertex<T, TVertexData, TRdgeData>>(visited)));
             }
 
             foreach (var edge in currentVertex.Edges)
@@ -75,7 +79,7 @@ namespace cv02.Path
         }
 
 
-        private bool containsByName(T name, List<Vertex<T>> list)
+        private bool containsByName(T name, List<Vertex<T, TVertexData, TRdgeData>> list)
         {
             foreach (var vertex in list)
             {
@@ -88,7 +92,7 @@ namespace cv02.Path
             return false;
         }
 
-        private bool PathAlreadyExists(List<Vertex<T>> newPath)
+        private bool PathAlreadyExists(List<Vertex<T, TVertexData, TRdgeData>> newPath)
         {
             foreach (var path in paths)
             {

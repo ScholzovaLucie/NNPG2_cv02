@@ -11,10 +11,10 @@ using System.Threading.Tasks;
 
 namespace cv02.Parser
 {
-    public class Parser<T>
+    public class Parser<T, TVertexData, TEdgeData>
     {
         private Data<T> data { get; set; }
-        private List<Vertex<T>> vertices { get; set; }
+        private List<Vertex<T, TVertexData, TEdgeData>> vertices { get; set; }
 
         public Parser(string filePath)
         {
@@ -30,14 +30,14 @@ namespace cv02.Parser
             }
         }
 
-        public List<Vertex<T>> ExtractVertices()
+        public List<Vertex<T, TVertexData, TEdgeData>> ExtractVertices()
         {
             try
             {
-                vertices = new List<Vertex<T>>();
+                vertices = new List<Vertex<T, TVertexData, TEdgeData>>();
                 foreach (T vertexName in data.Vertices)
                 {
-                    vertices.Add(new Vertex<T>(vertexName));
+                    vertices.Add(new Vertex<T, TVertexData, TEdgeData>(vertexName));
                 }
                 return vertices;
             }
@@ -49,24 +49,24 @@ namespace cv02.Parser
 
         }
 
-        public List<Edge<T>> ExtractEdges()
+        public List<Edge<T, TVertexData, TEdgeData>> ExtractEdges()
         {
             try
             {
 
-                List<Edge<T>> edges = new List<Edge<T>>();
+                List<Edge<T, TVertexData, TEdgeData>> edges = new List<Edge<T, TVertexData, TEdgeData>>();
                 foreach (T[] edgeArray in data.Edges)
                 {
                     T fromVertexName = edgeArray[0];
                     T toVertexName = edgeArray[1];
 
-                    Vertex<T> fromVertex = vertices.Find(v => EqualityComparer<T>.Default.Equals(v.Name, fromVertexName));
-                    Vertex<T> toVertex = vertices.Find(v => EqualityComparer<T>.Default.Equals(v.Name, toVertexName));
+                    Vertex<T, TVertexData, TEdgeData> fromVertex = vertices.Find(v => EqualityComparer<T>.Default.Equals(v.Name, fromVertexName));
+                    Vertex<T, TVertexData, TEdgeData> toVertex = vertices.Find(v => EqualityComparer<T>.Default.Equals(v.Name, toVertexName));
                     T name = (T)Convert.ChangeType("E" + edges.Count.ToString(), typeof(T));
 
                     if (fromVertex != null && toVertex != null)
                     {
-                        edges.Add(new Edge<T>(name, fromVertex, toVertex));
+                        edges.Add(new Edge<T, TVertexData, TEdgeData>(name, fromVertex, toVertex));
                     }
                     else
                     {
@@ -82,14 +82,14 @@ namespace cv02.Parser
             }
         }
 
-        public List<Vertex<T>> ExtractInputVertices()
+        public List<Vertex<T, TVertexData, TEdgeData>> ExtractInputVertices()
         {
             try
             {
-                List<Vertex<T>> inputVertices = new List<Vertex<T>>();
+                List<Vertex<T, TVertexData, TEdgeData>> inputVertices = new List<Vertex<T, TVertexData, TEdgeData>>();
                 foreach (T inputVertexName in data.InputVertices)
                 {
-                    Vertex<T> inputVertex = vertices.Find(v => EqualityComparer<T>.Default.Equals(v.Name, inputVertexName));
+                    Vertex<T, TVertexData, TEdgeData> inputVertex = vertices.Find(v => EqualityComparer<T>.Default.Equals(v.Name, inputVertexName));
                     if (inputVertex != null)
                     {
                         inputVertices.Add(inputVertex);
@@ -104,14 +104,14 @@ namespace cv02.Parser
             }
         }
 
-        public List<Vertex<T>> ExtractOutputVertices()
+        public List<Vertex<T, TVertexData, TEdgeData>> ExtractOutputVertices()
         {
             try
             {
-                List<Vertex<T>> outputVertices = new List<Vertex<T>>();
+                List<Vertex<T, TVertexData, TEdgeData>> outputVertices = new List<Vertex<T, TVertexData, TEdgeData>>();
                 foreach (T outputVertexName in data.OutputVertices)
                 {
-                    Vertex<T> outputVertex = vertices.Find(v => EqualityComparer<T>.Default.Equals(v.Name, outputVertexName));
+                    Vertex<T, TVertexData, TEdgeData> outputVertex = vertices.Find(v => EqualityComparer<T>.Default.Equals(v.Name, outputVertexName));
                     if (outputVertex != null)
                     {
                         outputVertices.Add(outputVertex);
@@ -126,18 +126,18 @@ namespace cv02.Parser
             }
         }
 
-        public List<List<Vertex<T>>> ExtractCross()
+        public List<List<Vertex<T, TVertexData, TEdgeData>>> ExtractCross()
         {
             try
             {
 
-                List<List<Vertex<T>>> cross = new List<List<Vertex<T>>>();
+                List<List<Vertex<T, TVertexData, TEdgeData>>> cross = new List<List<Vertex<T, TVertexData, TEdgeData>>>();
                 foreach (T[] crossArray in data.Cross)
                 {
-                    List<Vertex<T>> crossList = new List<Vertex<T>>();
+                    List<Vertex<T, TVertexData, TEdgeData>> crossList = new List<Vertex<T, TVertexData, TEdgeData>>();
                     foreach (T crossItem in crossArray)
                     {
-                        Vertex<T> crossVertex = vertices.Find(v => EqualityComparer<T>.Default.Equals(v.Name, crossItem));
+                        Vertex<T, TVertexData, TEdgeData> crossVertex = vertices.Find(v => EqualityComparer<T>.Default.Equals(v.Name, crossItem));
                         if (crossVertex != null)
                         {
                             crossList.Add(crossVertex);
