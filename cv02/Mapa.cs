@@ -31,7 +31,6 @@ namespace cv02
 
         public Mapa()
         {
-            // Inicializace grafického procesoru a nastavení událostí panelu pro kreslení
             InitializeComponent();
             InitializeGraphProcessor();
             InitializeEventHandlers();
@@ -40,7 +39,6 @@ namespace cv02
 
         private void InitializeGraphProcessor()
         {
-            // Inicializace grafického procesoru a zpracování grafu ze souboru
             this.graphProcessor = new GraphProcessor<string, VertexData, EdgeData>();
             this.graphProcessor.ProcessGraph("../../../files/sem_01_maly.json");
             this.count_paths.Text = this.graphProcessor.paths.paths.Count().ToString();
@@ -49,7 +47,6 @@ namespace cv02
 
         private void InitializeEventHandlers()
         {
-            // Pøiøazení událostí pro myš
             this.PaintPanel.MouseDown += PaintPanel_MouseDown;
             this.PaintPanel.MouseMove += PaintPanel_MouseMove;
             this.PaintPanel.MouseUp += PaintPanel_MouseUp;
@@ -59,7 +56,6 @@ namespace cv02
 
         private void SetInitialVertexPositions()
         {
-            // Nastavení poèáteèních pozic vrcholù
             foreach (Vertex<string, VertexData, EdgeData> item in this.graphProcessor.graphData.Vertices)
             {
                 if (this.graphProcessor.InputVertices.Contains(item))
@@ -142,15 +138,11 @@ namespace cv02
                     if (item.data.rectangle.Contains(e.Location))
                     {
                         this.edge.EndVertex = item;
+                        this.edge.StartVertex.Edges.Add(new Edge<string, VertexData, EdgeData>(edge.Name, edge.StartVertex, edge.EndVertex));
                         this.vertex = item;
-                        item.Edges.Add(edge);
-                        found = true;
+                        this.graphProcessor.edges.Add(new Edge<string, VertexData, EdgeData>(edge.Name, edge.StartVertex, edge.EndVertex));
+                        break;
                     }
-                }
-
-                if (found)
-                {
-                    this.graphProcessor.edges.Add(edge);
                 }
             }
 
@@ -168,19 +160,19 @@ namespace cv02
 
                         foreach (var actualEdge in this.graphProcessor.edges)
                         {
-                            if (actualEdge.EndVertex.Name.Equals(edge.EndVertex.Name) && actualEdge.StartVertex.Name.Equals(edge.StartVertex.Name))
+                            if ((actualEdge.EndVertex.Name.Equals(edge.EndVertex.Name) && actualEdge.StartVertex.Name.Equals(edge.StartVertex.Name)) ||
+                                actualEdge.EndVertex.Name.Equals(edge.StartVertex.Name) && actualEdge.StartVertex.Name.Equals(edge.EndVertex.Name)
+                                )
                             {
                                 deleteEdge = actualEdge;
+                                actualEdge.StartVertex.removeEdge(actualEdge);
+                                this.graphProcessor.edges.Remove(deleteEdge);
+                                break;
                             }
                         }
-                        edge.StartVertex.removeEdge(deleteEdge);
                         found = true;
                         break;
                     }
-                }
-                if (found)
-                {
-                    this.graphProcessor.edges.Remove(deleteEdge);
                 }
             }
             this.removing = false;
@@ -193,7 +185,6 @@ namespace cv02
 
         private void PaintPanel_MouseMove(object sender, MouseEventArgs e)
         {
-            bool foundMagnetic = false;
             if (dragging)
             {
                 this.vertex.data.rectangle.Location = new Point(e.X - this.vertex.data.point.X, e.Y - this.vertex.data.point.Y);
@@ -202,12 +193,6 @@ namespace cv02
             }
             if (drawEdge && drawingLine)
             {
-                foreach (Vertex<string, VertexData, EdgeData> item in this.graphProcessor.graphData.Vertices)
-                {
-                    foundMagnetic = true;
-                    Console.WriteLine(item.data.magneticRectangle.X + ": " + item.data.magneticRectangle.Y);
-                }
-
                 edge.data.endPoint = e.Location;
             }
             this.PaintPanel.Invalidate();
@@ -215,13 +200,11 @@ namespace cv02
 
         private void PaintPanel_Paint(object sender, PaintEventArgs e)
         {
-            // Provádìt kreslení v reakci na událost Paint
             Graphics g = e.Graphics;
             Font drawFont = new Font("Arial", 7);
             SolidBrush drawBrush = new SolidBrush(Color.Black);
             StringFormat drawFormat = new StringFormat();
 
-            // Pokud je zapnuté pøetahování, vykreslíme objekt zelenì
             if (dragging && vertex != null)
             {
                 g.FillEllipse(Brushes.Green, vertex.data.rectangle);
@@ -236,7 +219,7 @@ namespace cv02
                 }
                 redrawEdges(g);
             }
-            // Pokud je zapnuté kreslení úseèky, vykreslíme úseèku èernì
+
             if (drawEdge && drawingLine)
             {
                 g.DrawLine(linePen, edge.data.startPoint, edge.data.endPoint);
@@ -342,21 +325,17 @@ namespace cv02
 
         private void ZoomIn(Point zoomCenter)
         {
-            AdjustZoom(1.1f, zoomCenter); // Zoom in by 10%
+            AdjustZoom(1.1f, zoomCenter);
         }
 
         private void ZoomOut(Point zoomCenter)
         {
-            AdjustZoom(0.9f, zoomCenter); // Zoom out by 10%
+            AdjustZoom(0.9f, zoomCenter);
         }
         private void AdjustZoom(float factor, Point zoomCenter)
         {
             previousZoomFactor = zoomFactor;
             zoomFactor *= factor;
-
-           
-
-            // Adjust edges if needed similarly
 
             RepaintWithZoom(zoomCenter);
         }
@@ -365,8 +344,6 @@ namespace cv02
 
         private void RepaintWithZoom(Point zoomCenter)
         {
-            // Update PaintPanel size
-
             int newWidth = (int)(this.PaintPanel.Width * zoomFactor / previousZoomFactor);
             int newHeight = (int)(this.PaintPanel.Height * zoomFactor / previousZoomFactor);
 
@@ -388,15 +365,14 @@ namespace cv02
             this.AutoScrollPosition = new Point(Math.Max(0, this.AutoScrollPosition.X - offsetX),
                                                  Math.Max(0, this.AutoScrollPosition.Y - offsetY));
 
-            this.PaintPanel.Invalidate(); // Trigger a repaint
+            this.PaintPanel.Invalidate();
         }
 
        
 
         private void pridani_uzlu_Click(object sender, EventArgs e)
         {
-            VertexData vertexData = new VertexData();
-            Vertex<string, VertexData, EdgeData> newVertex = new Vertex<string, VertexData, EdgeData>((this.graphProcessor.graphData.Vertices.Count + 1, vertexData).ToString());
+            Vertex<string, VertexData, EdgeData> newVertex = new Vertex<string, VertexData, EdgeData>((this.graphProcessor.graphData.Vertices.Count + 1).ToString());
             newVertex.setData(new VertexData());
             newVertex.data.generateCoordinates(0, this.PaintPanel.ClientSize.Width, this.PaintPanel.ClientSize.Height);
             newVertex.data.rectangle = new Rectangle(newVertex.data.coordinateX, newVertex.data.coordinateY, radius, radius);
