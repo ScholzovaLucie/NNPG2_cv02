@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace cv02
 {
-    public class Data<T>
+    public class Data<T, TVertexData, TEdgeData>
     {
         public T[] Vertices { get; set; }
         public T[] InputVertices { get; set; }

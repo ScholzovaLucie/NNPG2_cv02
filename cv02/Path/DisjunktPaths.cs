@@ -9,26 +9,28 @@ using cv02.DrawData;
 
 namespace cv02.Path
 {
-    public class DisjunktPaths<T, TVertexData, TRdgeData>
+    public class DisjointPaths<T, TVertexData, TEdgeData>
     {
         [JsonProperty]
-        public List<HashSet<Path<T, TVertexData, TRdgeData>>> disjointPaths { get; set; }
+        public List<HashSet<Path<T, TVertexData, TEdgeData>>> DisjointPathSets { get; private set; }
+        private int MaxTupleSize;
 
-        public DisjunktPaths(Paths<T, TVertexData, TRdgeData> LList)
+        public DisjointPaths(List<Path<T, TVertexData, TEdgeData>> paths, int maxTupleSize)
         {
-            disjointPaths = new List<HashSet<Path<T, TVertexData, TRdgeData>>>();
-            FindDisjointPaths(LList.paths, new HashSet<Path<T, TVertexData, TRdgeData>>());
+            DisjointPathSets = new List<HashSet<Path<T, TVertexData, TEdgeData>>>();
+            MaxTupleSize = maxTupleSize;
+            GenerateDisjointSets(paths);
         }
 
-        public List<HashSet<Path<T, TVertexData, TRdgeData>>> getDisjonktPaths()
+        public List<HashSet<Path<T, TVertexData, TEdgeData>>> getDisjonktPaths()
         {
-            return disjointPaths;
+            return DisjointPathSets;
         }
 
         public void printList()
         {
             Console.WriteLine("Disjunktní množina cest: ");
-            foreach (var disjointSet in disjointPaths)
+            foreach (var disjointSet in DisjointPathSets)
             {
                 foreach (var path in disjointSet)
                 {
@@ -38,86 +40,55 @@ namespace cv02.Path
             }
         }
 
-        private void FindDisjointPaths(List<Path<T, TVertexData, TRdgeData>> paths, HashSet<Path<T, TVertexData, TRdgeData>> currentSet)
+        private void GenerateDisjointSets(List<Path<T, TVertexData, TEdgeData>> paths)
         {
+            var pairs = GenerateAllPairs(paths);
 
-            foreach (var path_first in paths)
+            foreach (var pair in pairs)
             {
-                var filtered = paths.Where(p => !p.getFirst().Name.Equals(path_first.getFirst().Name)).ToList();
-                filtered = filtered.Where(p => !p.getLast().Name.Equals(path_first.getLast().Name)).ToList();
+                DisjointPathSets.Add(new HashSet<Path<T, TVertexData, TEdgeData>>(pair));
+            }
 
-                foreach (var path_second in filtered)
+            for (int currentSize = 2; currentSize < MaxTupleSize; currentSize++)
+            {
+                var currentSets = DisjointPathSets.Where(s => s.Count == currentSize).ToList();
+                var newSets = new List<HashSet<Path<T, TVertexData, TEdgeData>>>();
+
+                foreach (var set in currentSets)
                 {
-                    currentSet.Add(path_first);
-                    currentSet.Add(path_second);
-
-                    if (path_first.IsDisjoint(path_second) && !disjunktAlreadyExist(currentSet))
+                    foreach (var path in paths)
                     {
-                        disjointPaths.Add(new HashSet<Path<T, TVertexData, TRdgeData>>(currentSet));
-                        FindDisjunktPathsToSet(paths, currentSet);
+                        if (set.All(s => s.IsDisjoint(path)) && !set.Contains(path))
+                        {
+                            var newSet = new HashSet<Path<T, TVertexData, TEdgeData>>(set) { path };
+                            if (!newSets.Any(ns => ns.SetEquals(newSet)))
+                            {
+                                newSets.Add(newSet);
+                            }
+                        }
                     }
-                    currentSet.Clear();
-
                 }
+
+                DisjointPathSets.AddRange(newSets);
             }
         }
 
-        private void FindDisjunktPathsToSet(List<Path<T, TVertexData, TRdgeData>> paths, HashSet<Path<T, TVertexData, TRdgeData>> currentSet)
+        private List<List<Path<T, TVertexData, TEdgeData>>> GenerateAllPairs(List<Path<T, TVertexData, TEdgeData>> paths)
         {
-            int count = 0;
+            var pairs = new List<List<Path<T, TVertexData, TEdgeData>>>();
 
-            var filtered = paths;
-
-            foreach (var path_first in currentSet)
+            for (int i = 0; i < paths.Count; i++)
             {
-                filtered = filtered.Where(p => !p.getFirst().Name.Equals(path_first.getFirst().Name)).ToList();
-                filtered = filtered.Where(p => !p.getLast().Name.Equals(path_first.getLast().Name)).ToList();
-            }
-
-            foreach (var path_second in filtered)
-            {
-                if (IsDisjointSet(currentSet, path_second))
+                for (int j = i + 1; j < paths.Count; j++)
                 {
-                    currentSet.Add(path_second);
-
-                    if (!disjunktAlreadyExist(currentSet))
+                    if (paths[i].IsDisjoint(paths[j]))
                     {
-                        disjointPaths.Add(new HashSet<Path<T, TVertexData, TRdgeData>>(currentSet));
-                        FindDisjunktPathsToSet(paths, currentSet);
+                        pairs.Add(new List<Path<T, TVertexData, TEdgeData>> { paths[i], paths[j] });
                     }
-                    else
-                    {
-                        currentSet.Remove(path_second);
-                    }
-
                 }
             }
-        }
 
-        private bool disjunktAlreadyExist(HashSet<Path<T, TVertexData, TRdgeData>> set)
-        {
-            if (disjointPaths.Count == 0) return false;
-
-            foreach (var path in disjointPaths)
-            {
-                if (path.SetEquals(set))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        private bool IsDisjointSet(HashSet<Path<T, TVertexData, TRdgeData>> set, Path<T, TVertexData, TRdgeData> newPath)
-        {
-            foreach (var path in set)
-            {
-                if (!path.IsDisjoint(newPath))
-                {
-                    return false;
-                }
-            }
-            return true;
+            return pairs;
         }
 
     }

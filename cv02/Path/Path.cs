@@ -98,6 +98,16 @@ namespace cv02.Path
 
             return true;
         }
+
+        public override string ToString()
+        {
+            string returnString = "";
+            foreach (var vertex in Vertices)
+            {
+                returnString += vertex.ToString() +"->";
+            }
+            return returnString;
+        }
     }
 
 }

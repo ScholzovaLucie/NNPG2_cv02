@@ -45,10 +45,16 @@
             DisjunktPaths = new ToolStripLabel();
             DisjunktPathsCount = new ToolStripLabel();
             Panel = new Panel();
+            panel1 = new Panel();
+            SeznamDisjunktnichCest = new ListBox();
+            SeznamCest = new ListBox();
+            label2 = new Label();
+            label1 = new Label();
             PaintPanel = new Panel();
             contextMenuStrip1 = new ContextMenuStrip(components);
             toolStrip1.SuspendLayout();
             Panel.SuspendLayout();
+            panel1.SuspendLayout();
             SuspendLayout();
             // 
             // toolStrip1
@@ -77,6 +83,7 @@
             // 
             // vymazani_uzlu
             // 
+            vymazani_uzlu.CheckOnClick = true;
             vymazani_uzlu.DisplayStyle = ToolStripItemDisplayStyle.Text;
             vymazani_uzlu.Image = (Image)resources.GetObject("vymazani_uzlu.Image");
             vymazani_uzlu.ImageTransparentColor = Color.Magenta;
@@ -87,6 +94,7 @@
             // 
             // posun_uzlu
             // 
+            posun_uzlu.CheckOnClick = true;
             posun_uzlu.DisplayStyle = ToolStripItemDisplayStyle.Text;
             posun_uzlu.Image = (Image)resources.GetObject("posun_uzlu.Image");
             posun_uzlu.ImageTransparentColor = Color.Magenta;
@@ -102,6 +110,7 @@
             // 
             // vytvoreni_useku
             // 
+            vytvoreni_useku.CheckOnClick = true;
             vytvoreni_useku.DisplayStyle = ToolStripItemDisplayStyle.Text;
             vytvoreni_useku.Image = (Image)resources.GetObject("vytvoreni_useku.Image");
             vytvoreni_useku.ImageTransparentColor = Color.Magenta;
@@ -112,6 +121,7 @@
             // 
             // vymazani_useku
             // 
+            vymazani_useku.CheckOnClick = true;
             vymazani_useku.DisplayStyle = ToolStripItemDisplayStyle.Text;
             vymazani_useku.Image = (Image)resources.GetObject("vymazani_useku.Image");
             vymazani_useku.ImageTransparentColor = Color.Magenta;
@@ -156,12 +166,61 @@
             // 
             // Panel
             // 
+            Panel.Controls.Add(panel1);
             Panel.Controls.Add(PaintPanel);
             Panel.Dock = DockStyle.Fill;
             Panel.Location = new Point(0, 25);
             Panel.Name = "Panel";
             Panel.Size = new Size(1484, 736);
             Panel.TabIndex = 2;
+            // 
+            // panel1
+            // 
+            panel1.Controls.Add(SeznamDisjunktnichCest);
+            panel1.Controls.Add(SeznamCest);
+            panel1.Controls.Add(label2);
+            panel1.Controls.Add(label1);
+            panel1.Dock = DockStyle.Right;
+            panel1.Location = new Point(1244, 0);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(240, 736);
+            panel1.TabIndex = 1;
+            // 
+            // SeznamDisjunktnichCest
+            // 
+            SeznamDisjunktnichCest.FormattingEnabled = true;
+            SeznamDisjunktnichCest.ItemHeight = 15;
+            SeznamDisjunktnichCest.Location = new Point(1, 297);
+            SeznamDisjunktnichCest.Name = "SeznamDisjunktnichCest";
+            SeznamDisjunktnichCest.Size = new Size(240, 439);
+            SeznamDisjunktnichCest.TabIndex = 4;
+            // 
+            // SeznamCest
+            // 
+            SeznamCest.FormattingEnabled = true;
+            SeznamCest.ItemHeight = 15;
+            SeznamCest.Location = new Point(1, 22);
+            SeznamCest.Name = "SeznamCest";
+            SeznamCest.Size = new Size(238, 244);
+            SeznamCest.TabIndex = 3;
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Location = new Point(5, 275);
+            label2.Name = "label2";
+            label2.Size = new Size(140, 15);
+            label2.TabIndex = 2;
+            label2.Text = "Seznam disjunktních cest";
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(2, 4);
+            label1.Name = "label1";
+            label1.Size = new Size(72, 15);
+            label1.TabIndex = 1;
+            label1.Text = "Seznam cest";
             // 
             // PaintPanel
             // 
@@ -170,7 +229,7 @@
             PaintPanel.BackgroundImageLayout = ImageLayout.Stretch;
             PaintPanel.Location = new Point(0, 0);
             PaintPanel.Name = "PaintPanel";
-            PaintPanel.Size = new Size(1484, 736);
+            PaintPanel.Size = new Size(1248, 736);
             PaintPanel.TabIndex = 0;
             PaintPanel.MouseWheel += PaintPanel_MouseWheel;
             // 
@@ -191,6 +250,8 @@
             toolStrip1.ResumeLayout(false);
             toolStrip1.PerformLayout();
             Panel.ResumeLayout(false);
+            panel1.ResumeLayout(false);
+            panel1.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -213,5 +274,10 @@
         private ToolStripSeparator toolStripSeparator4;
         private ToolStripLabel DisjunktPaths;
         private ToolStripLabel DisjunktPathsCount;
+        private Panel panel1;
+        private Label label2;
+        private Label label1;
+        private ListBox SeznamDisjunktnichCest;
+        private ListBox SeznamCest;
     }
 }

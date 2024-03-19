@@ -31,6 +31,8 @@ namespace cv02.DrawData
             {
                 this.coordinateY = rnd.Next(0, height);
             }
+
+            this.point = new Point(this.coordinateX, this.coordinateY);
         }
 
 

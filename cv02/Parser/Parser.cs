@@ -13,7 +13,7 @@ namespace cv02.Parser
 {
     public class Parser<T, TVertexData, TEdgeData>
     {
-        private Data<T> data { get; set; }
+        private Data<T, TVertexData, TEdgeData> data { get; set; }
         private List<Vertex<T, TVertexData, TEdgeData>> vertices { get; set; }
 
         public Parser(string filePath)
@@ -21,7 +21,7 @@ namespace cv02.Parser
             try
             {
                 string jsonData = System.IO.File.ReadAllText(filePath);
-                data = JsonConvert.DeserializeObject<Data<T>>(jsonData);
+                data = JsonConvert.DeserializeObject<Data<T, TVertexData, TEdgeData>>(jsonData);
 
             }
             catch (Exception ex)

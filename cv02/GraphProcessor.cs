@@ -7,56 +7,41 @@ using System.Collections.Generic;
 
 namespace cv02
 {
-    public class GraphProcessor<T, TVertexData, TRdgeData>
+    public class GraphProcessor<T, TVertexData, TEdgeData>
     {
-        public Paths<T, TVertexData, TRdgeData> paths { get; set; }
-        public DisjunktPaths<T, TVertexData, TRdgeData> DisjunktPaths { get; set; }
-
-        public Graf<T, TVertexData, TRdgeData> graphData { get; set; }
-        public List<Vertex<T, TVertexData, TRdgeData>> InputVertices { get; set; }
-        public List<Vertex<T, TVertexData, TRdgeData>> OutputVertices { get; set; }
-        public List<Edge<T, TVertexData, TRdgeData>> edges { get; set; }
-        public List<Vertex<T, TVertexData, TRdgeData>> vertices { get; set; }
+        private List<Vertex<T, TVertexData, TEdgeData>> Vertices { get; set; }
+        private List<Vertex<T, TVertexData, TEdgeData>> InputVertices { get; set; }
+        private List<Vertex<T, TVertexData, TEdgeData>> OutputVertices { get; set; }
+        private List<List<Vertex<T, TVertexData, TEdgeData>>> Cross { get; set; }
+        private List<Edge<T, TVertexData, TEdgeData>> edges { get; set; }
 
 
         public void ProcessGraph(string filePath)
         {
-            Parser<T, TVertexData, TRdgeData> parser = new Parser<T, TVertexData, TRdgeData>(filePath);
-            vertices = parser.ExtractVertices();
+            Parser<T, TVertexData, TEdgeData> parser = new Parser<T, TVertexData, TEdgeData>(filePath);
+            Vertices = parser.ExtractVertices();
             edges = parser.ExtractEdges();
             InputVertices = parser.ExtractInputVertices();
             OutputVertices = parser.ExtractOutputVertices();
-            List<List<Vertex<T, TVertexData, TRdgeData>>> cross = parser.ExtractCross();
-
-            graphData = CreateGraf(vertices, edges, cross);
-
-            paths = new Paths<T, TVertexData, TRdgeData>(graphData, InputVertices, OutputVertices);
-
-            DisjunktPaths = new DisjunktPaths<T, TVertexData, TRdgeData>(paths);
-
-            paths.printList();
-            DisjunktPaths.printList();
-
-            Console.WriteLine("LList: "+paths.paths.Count);
-            Console.WriteLine("RList: " + DisjunktPaths.getDisjonktPaths().Count);
+            Cross = parser.ExtractCross();
         }
 
-        private Graf<T, TVertexData, TRdgeData> CreateGraf(List<Vertex<T, TVertexData, TRdgeData>> vertices, List<Edge<T, TVertexData, TRdgeData>> edges, List<List<Vertex<T, TVertexData, TRdgeData>>> cross)
+        public Graf<T, TVertexData, TEdgeData> CreateGraf()
         {
-            Graf<T, TVertexData, TRdgeData> graf = new Graf<T, TVertexData, TRdgeData>();
+            Graf<T, TVertexData, TEdgeData> graf = new Graf<T, TVertexData, TEdgeData>();
 
-            foreach (Vertex<T, TVertexData, TRdgeData> vertex in vertices)
+            foreach (Vertex<T, TVertexData, TEdgeData> vertex in Vertices)
             {
-                List<Edge<T, TVertexData, TRdgeData>> currentEdges = findEdges(vertex, edges);
+                List<Edge<T, TVertexData, TEdgeData>> currentEdges = findEdges(vertex, edges);
                 foreach (var edge in currentEdges)
                 {
                     vertex.Edges.Add(edge);
                 }
                 graf.AddVertex(vertex);
-                
+
             }
 
-            foreach (var item in cross)
+            foreach (var item in Cross)
             {
                 graf.Cross.Add(item);
             }
@@ -65,16 +50,36 @@ namespace cv02
             return graf;
         }
 
-        private List<Edge<T, TVertexData, TRdgeData>> findEdges(Vertex<T, TVertexData, TRdgeData> vertex, List<Edge<T, TVertexData, TRdgeData>> edges)
+        private List<Edge<T, TVertexData, TEdgeData>> findEdges(Vertex<T, TVertexData, TEdgeData> vertex, List<Edge<T, TVertexData, TEdgeData>> edges)
         {
-            List<Edge<T, TVertexData, TRdgeData>> currentEdges = new List<Edge<T, TVertexData, TRdgeData>>();
+            List<Edge<T, TVertexData, TEdgeData>> currentEdges = new List<Edge<T, TVertexData, TEdgeData>>();
             foreach (var edge in edges)
             {
-                if(edge.StartVertex.sameVertex(vertex)) currentEdges.Add(edge);
+                if (edge.StartVertex.sameVertex(vertex)) currentEdges.Add(edge);
             }
             return currentEdges;
         }
-        
+
+
+        public List<Vertex<T, TVertexData, TEdgeData>> getInputVertices()
+        {
+            return InputVertices;
+        }
+
+        public List<Vertex<T, TVertexData, TEdgeData>> getOutputVertices()
+        {
+            return OutputVertices;
+        }
+
+        public List<Vertex<T, TVertexData, TEdgeData>> GetVertices()
+        {
+            return Vertices;
+        }
+
+        public List<List<Vertex<T, TVertexData, TEdgeData>>> getCross()
+        {
+            return Cross;
+        }
 
 
     }
