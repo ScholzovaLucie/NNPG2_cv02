@@ -17,5 +17,4 @@ C:\Users\lucka\OneDrive - Univerzita Pardubice\UPCE\ING 1.rocnik 2.semestr\grafi
 C:\Users\lucka\OneDrive - Univerzita Pardubice\UPCE\ING 1.rocnik 2.semestr\grafika\cviceni\cv02\cv02\obj\Debug\net6.0-windows\ref\cv02.dll
 C:\Users\lucka\OneDrive - Univerzita Pardubice\UPCE\ING 1.rocnik 2.semestr\grafika\cviceni\cv02\cv02\bin\Debug\net6.0-windows\Newtonsoft.Json.dll
 C:\Users\lucka\OneDrive - Univerzita Pardubice\UPCE\ING 1.rocnik 2.semestr\grafika\cviceni\cv02\cv02\obj\Debug\net6.0-windows\cv02.Mapa.resources
-C:\Users\lucka\OneDrive - Univerzita Pardubice\UPCE\ING 1.rocnik 2.semestr\grafika\cviceni\cv02\cv02\obj\Debug\net6.0-windows\cv02.sourcelink.json
-C:\Users\lucka\OneDrive - Univerzita Pardubice\UPCE\ING 1.rocnik 2.semestr\grafika\cviceni\cv02\cv02\obj\Debug\net6.0-windows\cv02.csproj.Up2Date
+C:\Users\lucka\OneDrive - Univerzita Pardubice\UPCE\ING 1.rocnik 2.semestr\grafika\cviceni\cv02\cv02\obj\Debug\net6.0-windows\cv02.csproj.CopyComplete

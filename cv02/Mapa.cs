@@ -266,11 +266,12 @@ namespace cv02
                 this.graf.UpdateVertex(this.vertex);
                 this.PaintPanel.Invalidate();
             }
-            if (drawEdge && drawingLine)
+            if (drawEdge && drawingLine && !dragging)
             {
                 edge.data.endPoint = e.Location;
+                this.PaintPanel.Invalidate();
             }
-            this.PaintPanel.Invalidate();
+           
         }
 
         private void PaintPanel_Paint(object sender, PaintEventArgs e)
@@ -322,9 +323,10 @@ namespace cv02
 
         private void ShowDisjunkt(Graphics g)
         {
-            foreach (var path in disjunktPaths)
+            Brush[] brushes = { Brushes.Blue, Brushes.BlueViolet, Brushes.Brown, Brushes.DarkGreen, Brushes.Honeydew };
+            for (int i = 0; i < disjunktPaths.Count; i++) 
             {
-                ShowPath(g, path, new Pen(Brushes.Blue, 3));
+                ShowPath(g, disjunktPaths.ElementAt(i), new Pen(brushes[i], 3));
             }
         }
 
